@@ -52,6 +52,7 @@ function solve() {
     console.log(yellow_count)
 
     //look through the whole list of words and choose word with max 'score' that also satisfies the constraints.
+    
 }
 
 solve()
