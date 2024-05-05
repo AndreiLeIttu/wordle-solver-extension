@@ -16,6 +16,6 @@ with open("list.txt", "r") as file:
     from functools import cmp_to_key
     sortedList = sorted(words, key=cmp_to_key(cmp), reverse=True)
 
-    with open("word-list-sorted.txt", "w") as file2:
+    with open("../word-list-sorted.txt", "w") as file2:
         for item in sortedList:
             file2.write("%s\n" % item)

@@ -1,6 +1,6 @@
 function solve() {
     //finding first empty row
-    let words = []
+    let field_num = 0
     for (let i=1;i<=6;i++) {
         let str = "#board > game-row:nth-child(" + i + ")"
         let cur_child = document.querySelector("body > game-app").shadowRoot.querySelector(str)
@@ -52,7 +52,62 @@ function solve() {
     console.log(yellow_count)
 
     //look through the whole list of words and choose word with max 'score' that also satisfies the constraints.
-    
+
+    const fileUrl = chrome.runtime.getURL("word-list-sorted.txt")
+    fetch(fileUrl)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch file');
+        }
+        return response.text();
+    })
+    .then(text => {
+        const lines = text.split('\n');
+        let trimmedLines = lines.map(line => line.trim())
+        trimmedLines.pop()
+        for (let i=0; i<trimmedLines.length;i++) {
+            let word = trimmedLines[i]
+            let valid = true
+            let cur_yellow_count = new Array(26).fill(0);
+            for (let j=0;j<26;j++)
+                cur_yellow_count[j]=yellow_count[j]
+            for (let j=0;j<5;j++) {
+                if (!available[j].has(word[j])) {
+                    valid = false 
+                    break
+                }
+                cur_yellow_count[word[j].charCodeAt(0) - 'a'.charCodeAt(0)]--
+            }
+            if (valid) {
+                for (let j=0;j<26;j++) {
+                    if (cur_yellow_count[j]>0) {
+                        valid = false 
+                        break
+                    }
+                }
+                if (valid) {
+                    let finStr = "#board > game-row:nth-child(" + field_num + ")"
+                    let elem = document.querySelector("body > game-app").shadowRoot.querySelector(finStr)
+                    elem.setAttribute("letters", word)
+                    const enterEvent = new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        keyCode: 13,
+                        bubbles: true, // Allow event to bubble up through the DOM
+                        cancelable: true, // Allow event to be canceled
+                      });
+                      
+                      elem.dispatchEvent(enterEvent);
+                    break
+                }
+                else {
+                    continue
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 solve()

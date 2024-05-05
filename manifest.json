@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Hello Extensions",
+    "name": "Wordle Solver",
     "description": "Base Level Extension",
     "version": "1.0",
 
@@ -13,5 +13,11 @@
     },
     "background": {
       "service_worker": "scripts/background.js"
-    }
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["word-list-sorted.txt"],
+        "matches": ["https://wordleunlimited.org/*"]
+      }
+    ]
   }
